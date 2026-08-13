@@ -18,8 +18,8 @@ version 2025.3.0) used for the RAL GWC work.
 | --- | --- |
 | `credit/` | Installable packages. |
 | `applications/` | Training and prediction drivers that use YAML configs. |
-| `GWC_MESO/` | CONUS404 / WRF mesoscale emulation project: data preprocessing notebooks and run configs. |
-| `GWC_MICRO/` | FastEddy LES emulation project: preprocessing, model development, verification libs. |
+| `GWC_MESO/` | CONUS404 emulation project: data preprocessing notebooks and run configs. |
+| `GWC_MICRO/` | FastEddy LES emulation project: preprocessing, verification. |
 | `create_derecho_env.sh` | Environment bootstrap script for NCAR Derecho. |
 
 ### `credit/` — core library
