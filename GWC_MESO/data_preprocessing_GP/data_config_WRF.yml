@@ -1,0 +1,81 @@
+
+# =========================================================================================== #
+# PBS management
+qsub:
+    qsub_loc: '/glade/u/home/ksha/CONUS-404-prep/qsub/'
+    scripts_loc: '/glade/u/home/ksha/CONUS-404-prep/data_preprocessing/scripts/'
+    
+# =========================================================================================== #
+# Z-score and residual norm coef
+zscore:
+    WRF_GLW: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_MSLP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_OLR: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_P: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_PWAT: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_Q_tot: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SBCAPE: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SMOIS: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SWDOWN: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_T2: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TCC: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TD2: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TSLB: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_U10: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_V10: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_W: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_Z: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_precip: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_radar_composite: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_precip_025: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_radar_composite_025: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_PWAT_05: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_Q_tot_05: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+
+    save_loc: '/glade/campaign/ral/hap/ksha/DWC_data/CONUS_domain_GP/temp_npy/'
+    years_range: [1980, 2019]
+    prefix: 'zscore_WRF_1980_2019'
+    
+residual:
+    WRF_GLW: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_MSLP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_OLR: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_P: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_PWAT: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    # WRF_Q_tot: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SBCAPE: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SMOIS: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_SWDOWN: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_T2: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TCC: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TD2: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_TSLB: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_U10: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_V10: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_W: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    # WRF_Z: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_precip: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_radar_composite: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_precip_025: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_radar_composite_025: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_PWAT_05: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    WRF_Q_tot_05: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/C404_land/C404_GP_*.zarr'
+    
+    save_loc: '/glade/campaign/ral/hap/ksha/DWC_data/CONUS_domain_GP/temp_npy/'
+    mean_loc: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/C404_mean_1980_2019_12lev.nc'
+    std_loc: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/C404_std_1980_2019_12lev.nc'
+    years_range: [1980, 2019]
+    prefix: 'residual_WRF_1980_2019'
+
+
+
+
+

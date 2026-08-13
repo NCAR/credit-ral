@@ -1,0 +1,41 @@
+
+# =========================================================================================== #
+# PBS management
+qsub:
+    qsub_loc: '/glade/u/home/ksha/FastEddy-DT/qsub/'
+    scripts_loc: '/glade/u/home/ksha/FastEddy-DT/data_preprocessing/scripts/'
+    
+# =========================================================================================== #
+# Z-score and residual norm coef
+zscore:
+    u: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    v: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    w: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    theta: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    rho: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    qv: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    TKE_0: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    
+    save_loc: '/glade/campaign/ral/hap/ksha/FastEddy_data/FE/temp_npy/'
+    file_nums: 10
+    prefix: 'zscore_FE'
+    
+residual:
+    u: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    v: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    w: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    theta: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    rho: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    qv: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    TKE_0: '/glade/derecho/scratch/ksha/FastEddy/FE_04lev_new/experiment_*.zarr'
+    
+    save_loc: '/glade/campaign/ral/hap/ksha/FastEddy_data/FE/temp_npy/'
+    mean_loc: '/glade/derecho/scratch/ksha/FastEddy/mean_std/FE_mean_04lev_new.nc'
+    std_loc: '/glade/derecho/scratch/ksha/FastEddy/mean_std/FE_std_04lev_new.nc'
+    file_nums: 10
+    prefix: 'residual_FE'
+
+
+
+
+

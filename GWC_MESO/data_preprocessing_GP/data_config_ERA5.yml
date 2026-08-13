@@ -1,0 +1,45 @@
+
+# =========================================================================================== #
+# PBS management
+qsub:
+    qsub_loc: '/glade/u/home/ksha/CONUS-404-prep/qsub/'
+    scripts_loc: '/glade/u/home/ksha/CONUS-404-prep/data_preprocessing/scripts/'
+    
+# =========================================================================================== #
+# Z-score and residual norm coef
+zscore:
+    U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    Q: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    MSL: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    #SP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_2T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_10U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_10V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    
+    save_loc: '/glade/campaign/ral/hap/ksha/DWC_data/CONUS_domain_GP/temp_ERA5_npy/'
+    years_range: [1980, 2019]
+    prefix: 'zscore_ERA5_6h_1980_2019'
+    
+residual:
+    U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    Q: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    MSL: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    #SP: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_2T: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_10U: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    VAR_10V: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_6h/ERA5_GP_6h_*.zarr'
+    
+    save_loc: '/glade/campaign/ral/hap/ksha/DWC_data/CONUS_domain_GP/temp_ERA5_npy/'
+    mean_loc: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/ERA5_6h_mean_1980_2019.nc'
+    std_loc: '/glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/ERA5_6h_std_1980_2019.nc'
+    years_range: [1980, 2019]
+    prefix: 'residual_ERA5_6h_1980_2019'
+
+
+
+
+
