@@ -10,16 +10,16 @@ version 2025.3.0) used for the RAL GWC work.
 
 ---
 
-## Repository layout
+## Repository Layout
 
 ### Top level
 
 | Path | Purpose |
 | --- | --- |
-| `credit/` | The installable Python package: models, datasets, trainers, losses, transforms, verification. |
-| `applications/` | Command-line entry points — training and prediction drivers that consume a YAML config. |
+| `credit/` | Installable packages. |
+| `applications/` | Training and prediction drivers that use YAML configs. |
 | `GWC_MESO/` | CONUS404 / WRF mesoscale emulation project: data preprocessing notebooks and run configs. |
-| `GWC_MICRO/` | FastEddy LES (microscale) emulation project: preprocessing, model development, verification libs. |
+| `GWC_MICRO/` | FastEddy LES emulation project: preprocessing, model development, verification libs. |
 | `create_derecho_env.sh` | Environment bootstrap script for NCAR Derecho. |
 
 ### `credit/` — core library
