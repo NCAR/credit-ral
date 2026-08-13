@@ -70,7 +70,8 @@ version 2025.3.0) used for the RAL GWC work.
 ### `GWC_MESO/` — CONUS404 mesoscale emulation
 
 * [Documentation](https://docs.google.com/document/d/114rqmpH_dyFuOGv5o6DYjuypzRDX2xu8O1C-jAEVv3s/edit?usp=sharing)
-  
+* [Sha et al. (2026) Repository](https://github.com/yingkaisha/RAL-GWC-CONUS)
+
 Domain suffixes: `FULL` (full CONUS), `GP` (Great Plains), `PNW` (Pacific Northwest), `SW` (Southwest).
 
 | Path | Purpose |
