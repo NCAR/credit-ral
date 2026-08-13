@@ -25,8 +25,7 @@ CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus glo
 | `pyproject.toml`, `setup.py`, `requirements.txt` | Packaging and dependency specification. |
 | `environment_cpu.yml`, `environment_gpu.yml` | Conda environment files for non-Derecho machines. |
 | `ruff.toml`, `ruff_summary.txt` | Lint configuration and a saved lint report. |
-| `build/`, `credit.egg-info/`, `miles_credit.egg-info/` | Build/packaging artifacts (not source). |
-| `LICENSE` | License terms. |
+| `build/`, `credit.egg-info/`, `miles_credit.egg-info/` | Build/packaging. |
 
 ### `credit/` — core library
 
@@ -34,8 +33,8 @@ CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus glo
 
 | Path | Purpose |
 | --- | --- |
-| `models/` | Network architectures: `crossformer.py`, `fuxi.py`, `swin.py` / `swin_wrf*.py`, `unet*.py`, `graph.py`, CorrDiff and diffusion variants, downscaling (`dscale_*`) and diagnostic (`diag_unet`) models, plus `base_model.py`, `checkpoint.py`, `reset.py`. |
-| `datasets/` | PyTorch datasets/dataloaders per task and data source: ERA5 single-step and multi-step, WRF, LES, downscaling, diagnostics, real-time prediction, and `load_dataset_and_dataloader.py` as the factory. |
+| `models/` | Network architectures plus `base_model.py`, `checkpoint.py`, `reset.py`. |
+| `datasets/` | PyTorch datasets/dataloaders per task and data source: ERA5 single-step and multi-step, WRF, LES, downscaling, diagnostics, real-time prediction, and `load_dataset_and_dataloader.py`. |
 | `trainers/` | Training loops, one per task/model family (`trainerERA5*`, `trainerWRF*`, `trainerLES`, `trainerDscale`, `trainerDiag`, `trainerCorrDiff`, `trainer404`), on top of `base_trainer.py`. |
 | `transforms/` | Normalization / variable-packing pipelines per domain (`transforms_global`, `_wrf`, `_les`, `_dscale`, `_diag`, `_quantile`). |
 | `losses/` | Loss functions: weighted/latitude-weighted losses, spectral, CRPS variants (`kcrps`, `almost_fair_crps`), logcosh, MSLE, power, xtanh/xsigmoid, and task-specific LES/diagnostic losses. |
@@ -56,15 +55,7 @@ CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus glo
 | `scheduler.py`, `mixed_precision.py`, `distributed.py`, `seed.py` | LR schedules, AMP/FSDP setup, DDP/FSDP distributed helpers, reproducibility. |
 | `pbs.py` | PBS job-script generation and submission for Derecho. |
 | `physics_core.py`, `physics_constants.py` | Physics-based constraints (mass/energy/water conservation) and constants. |
-| `postblock.py`, `skebs.py`, `pol_lapdiff_filt.py` | Post-model blocks: conservation fixes, stochastic kinetic-energy backscatter, polar Laplacian diffusion filtering. |
-| `diffusion.py`, `diffusion_utils.py`, `attend.py` | Diffusion-model machinery and attention primitives. |
 | `grid.py`, `interp.py`, `regrid.py`, `boundary_padding.py` | Grid definitions, interpolation/regridding, boundary padding for limited-area domains. |
-| `solar.py` | Solar forcing / TOA insolation computation. |
-| `nwp.py`, `gefs.py` | Ingestion of operational NWP and GEFS data. |
-| `transforms404.py` | CONUS404-specific transforms. |
-| `replay_buffer.py` | Replay buffer for multi-step / rollout training. |
-| `credit_ptype.py` | Precipitation-type post-processing model. |
-| `visualization_tools.py`, `animation.py` | Plotting and animation helpers. |
 
 ### `applications/` — run scripts
 
@@ -80,7 +71,6 @@ CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus glo
 | `scaler.py` | Compute mean/std (and other) scaling files from a dataset. |
 | `model_summary.py` | Print model architecture/parameter counts from a config. |
 | `config_visualization_example.yml` | Example config for the visualization tools. |
-| `deprecated/` | Retired drivers kept for reference. |
 
 ### `GWC_MESO/` — CONUS404 mesoscale emulation
 
