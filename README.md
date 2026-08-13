@@ -1,8 +1,7 @@
 # AI Model Repository for RAL-GWC Project
 
 A fork/extension of [MILES-CREDIT](https://miles-credit.readthedocs.io/en/latest/) (`credit` package,
-version 2025.3.0) used for the RAL Global Weather Challenge (GWC) work: deep-learning emulation of
-CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus global ERA5 modeling.
+version 2025.3.0) used for the RAL GWC work.
 
 ## Installation
 * Run `create_derecho_env.sh` — creates the `credit-gwc3` conda env (Python 3.11), installs the
@@ -22,10 +21,6 @@ CONUS404/WRF mesoscale simulations and FastEddy large-eddy simulations, plus glo
 | `GWC_MESO/` | CONUS404 / WRF mesoscale emulation project: data preprocessing notebooks and run configs. |
 | `GWC_MICRO/` | FastEddy LES (microscale) emulation project: preprocessing, model development, verification libs. |
 | `create_derecho_env.sh` | Environment bootstrap script for NCAR Derecho. |
-| `pyproject.toml`, `setup.py`, `requirements.txt` | Packaging and dependency specification. |
-| `environment_cpu.yml`, `environment_gpu.yml` | Conda environment files for non-Derecho machines. |
-| `ruff.toml`, `ruff_summary.txt` | Lint configuration and a saved lint report. |
-| `build/`, `credit.egg-info/`, `miles_credit.egg-info/` | Build/packaging. |
 
 ### `credit/` — core library
 
