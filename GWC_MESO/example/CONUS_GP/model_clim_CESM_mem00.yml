@@ -1,0 +1,256 @@
+data:
+  boundary:
+    all_varnames:
+    - U
+    - V
+    - T
+    - Q
+    - MSL
+    - VAR_2T
+    - VAR_10U
+    - VAR_10V
+    forecast_len: 0
+    history_len: 2
+    lead_time_periods: 6
+    levels: 11
+    mean_path: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/ERA5_3h_mean_1980_2019.nc
+    save_loc: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_CESM/CESM_GP_mem0_*.zarr
+    save_loc_surface: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/dscale_CESM/CESM_GP_mem0_*.zarr
+    std_path: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/ERA5_3h_std_1980_2019.nc
+    surface_variables:
+    - MSL
+    - VAR_2T
+    - VAR_10U
+    - VAR_10V
+    valid_forecast_len: 0
+    valid_history_len: 2
+    variables:
+    - U
+    - V
+    - T
+    - Q
+  forecast_len: 0
+  history_len: 1
+  lead_time_periods: 1
+  levels: 12
+  mean_path: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/C404_mean_1980_2019_12lev.nc
+  one_shot: false
+  save_loc: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/opt_init_ERA5/clim_ref/clim_*_15d.zarr
+  save_loc_static: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/static/C404_GP_static.zarr
+  save_loc_surface: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/opt_init_ERA5/clim_ref/clim_*_15d.zarr
+  scaler_type: std-wrf
+  skip_periods: null
+  static_first: true
+  static_variables:
+  - z_norm
+  - var_norm
+  - lu_norm
+  - LANDMASK
+  std_path: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/mean_std/C404_std_residual_1980_2019_12lev_clean.nc
+  surface_variables:
+  - WRF_SP
+  - WRF_MSLP
+  - WRF_T2
+  - WRF_TD2
+  - WRF_U10
+  - WRF_V10
+  - WRF_PWAT_05
+  train_years:
+  - 1980
+  - 2019
+  valid_forecast_len: 0
+  valid_history_len: 1
+  valid_years:
+  - 2019
+  - 2020
+  variables:
+  - WRF_P
+  - WRF_U
+  - WRF_V
+  - WRF_T
+  - WRF_Q_tot_05
+loss:
+  latitude_weights: /glade/derecho/scratch/ksha/DWC_data/CONUS_domain_GP/static/C404_GP_static.zarr
+  training_loss: mse
+  use_latitude_weights: false
+  use_power_loss: false
+  use_spectral_loss: false
+  use_variable_weights: true
+  variable_weights:
+    WRF_MSLP: 0.14
+    WRF_P:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+    WRF_PWAT_05: 0.14
+    WRF_Q_tot_05:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+    WRF_SP: 0.14
+    WRF_T:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+    WRF_T2: 0.14
+    WRF_TD2: 0.14
+    WRF_U:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+    WRF_U10: 0.14
+    WRF_V:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+    WRF_V10: 0.14
+    WRF_W:
+    - 0.13636983931064606
+    - 0.12900586426258087
+    - 0.1247783973813057
+    - 0.11823264509439468
+    - 0.10909587144851685
+    - 0.09750442951917648
+    - 0.0831855982542038
+    - 0.06818491965532303
+    - 0.057275332510471344
+    - 0.038183555006980896
+    - 0.02454657107591629
+    - 0.013636983931064606
+model:
+  depth: 36
+  interp: false
+  levels: 12
+  num_groups: 32
+  num_heads: 8
+  padding_conf:
+    activate: false
+  param_interior:
+    channels: 5
+    dim: 1280
+    frame_patch_size: 1
+    frames: 1
+    image_height: 336
+    image_width: 336
+    input_only_channels: 4
+    levels: 12
+    output_only_channels: 0
+    patch_height: 4
+    patch_width: 4
+    surface_channels: 7
+  param_outside:
+    channels: 4
+    dim: 1280
+    frame_patch_size: 2
+    frames: 2
+    image_height: 336
+    image_width: 336
+    levels: 11
+    patch_height: 4
+    patch_width: 4
+    surface_channels: 4
+  post_conf:
+    activate: true
+    tracer_fixer:
+      activate: true
+      denorm: true
+      tracer_name:
+      - WRF_Q_tot_05
+      - WRF_PWAT_05
+      tracer_thres:
+      - 0
+      - 0
+  time_encode_dim: 16
+  type: wrf
+  use_spectral_norm: true
+  window_size: 7
+predict:
+  forecasts:
+    pred_step: 26352
+    start_ind: 0
+    year_range:
+    - 2025
+    - 2028
+  save_forecast: /glade/derecho/scratch/ksha/DWC/RAW_OUTPUT/CONUS_GP_CESM_mem00/
+save_loc: /glade/work/ksha/DWC_runs/CONUS_GP_clean/
+seed: 1000
+trainer:
+  activation_checkpoint: true
+  amp: false
+  batches_per_epoch: 3000
+  cpu_offload: false
+  epochs: 126
+  grad_accum_every: 1
+  grad_max_norm: 32.0
+  learning_rate: 0.001
+  load_optimizer: true
+  load_scaler: true
+  load_sheduler: true
+  load_weights: true
+  mode: fsdp
+  num_epoch: 7
+  reload_epoch: true
+  save_backup_weights: true
+  save_best_weights: true
+  save_metric_vars: true
+  scheduler:
+    T_max: 126
+    last_epoch: -1
+    scheduler_type: cosine-annealing
+  skip_validation: false
+  start_epoch: 0
+  stopping_patience: 999
+  thread_workers: 4
+  train_batch_size: 1
+  type: standard-wrf
+  update_learning_rate: false
+  use_scheduler: true
+  valid_batch_size: 1
+  valid_batches_per_epoch: 10
+  valid_thread_workers: 0
+  weight_decay: 1.0e-06

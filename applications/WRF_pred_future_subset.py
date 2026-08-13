@@ -161,6 +161,7 @@ def check_time_proximity(t1, tb0, tb1, max_hours=2):
 
 def predict(rank, world_size, conf, p):
 
+    # spectral nudgging test 
     # ======================================================= #
     # !!!!!!!!!!!!!!!!!! hard coded blocks !!!!!!!!!!!!!!!!!! 
     ys = slice(140, 140 + 336)
