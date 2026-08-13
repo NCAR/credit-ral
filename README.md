@@ -69,6 +69,8 @@ version 2025.3.0) used for the RAL GWC work.
 
 ### `GWC_MESO/` — CONUS404 mesoscale emulation
 
+* [Documentation](https://docs.google.com/document/d/114rqmpH_dyFuOGv5o6DYjuypzRDX2xu8O1C-jAEVv3s/edit?usp=sharing)
+  
 Domain suffixes: `FULL` (full CONUS), `GP` (Great Plains), `PNW` (Pacific Northwest), `SW` (Southwest).
 
 | Path | Purpose |
@@ -79,6 +81,8 @@ Domain suffixes: `FULL` (full CONUS), `GP` (Great Plains), `PNW` (Pacific Northw
 | `example/CONUS_FULL/`, `example/CONUS_GP/` | Ready-to-run experiment configs and launch scripts: single-step (`model_single`), multi-step rollouts by lead time (`model_multi_NN`), hyperparameter tuning (`model_tune`/`model_opt`), inference (`model_pred*`), and long climate runs driven by CESM members, GDAS, or varying boundary-update frequency (`model_clim_*`). |
 
 ### `GWC_MICRO/` — FastEddy LES emulation
+
+* [Documentation](https://docs.google.com/document/d/1RIZNMinySTYCAvIoWlo4yoAcS2AxZeRsYkH2Nyko-C8/edit?usp=sharing)
 
 | Path | Purpose |
 | --- | --- |
