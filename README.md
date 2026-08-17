@@ -1,7 +1,6 @@
 # AI Model Repository for RAL-GWC Project
 
-A fork/extension of [MILES-CREDIT](https://miles-credit.readthedocs.io/en/latest/) (`credit` package,
-version 2025.3.0) used for the RAL GWC work.
+A repository based on [MILES-CREDIT](https://miles-credit.readthedocs.io/en/latest/) (`credit` package, version 2025.3.0) for the RAL GWC Project.
 
 ## Installation
 * Run `create_derecho_env.sh` — creates the `credit-gwc3` conda env (Python 3.11), installs the
@@ -53,7 +52,6 @@ version 2025.3.0) used for the RAL GWC work.
 
 | File | Purpose |
 | --- | --- |
-| `train.py` | Generic (ERA5/global) training driver. |
 | `WRF_train.py`, `WRF_train_multi.py`, `WRF_train_subset.py` | CONUS404/WRF training: single-step, multi-step rollout, and subset-domain variants. |
 | `WRF_pred_future.py`, `WRF_pred_future_subset.py`, `WRF_pred_teacher.py`, `WRF_pred_metrics.py` | WRF inference: free-running forecasts, teacher-forced runs, and scoring. |
 | `LES_train.py`, `LES_pred.py` | FastEddy LES emulator training and inference. |
