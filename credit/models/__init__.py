@@ -3,38 +3,18 @@ import sys
 import copy
 import logging
 
-# Import model classes
-from credit.models.crossformer import CrossFormer
-from credit.models.unet import SegmentationModel
-from credit.models.unet404 import SegmentationModel404
-from credit.models.fuxi import Fuxi
-from credit.models.swin import SwinTransformerV2Cr
-from credit.models.graph import GraphResTransfGRU
 from credit.models.debugger_model import DebuggerModel
-from credit.models.crossformer_ensemble import CrossFormerWithNoise
-from credit.models.crossformer_diffusion import CrossFormerDiffusion
-from credit.models.unet_diffusion import UnetDiffusion
-from credit.diffusion import ModifiedGaussianDiffusion
 from credit.models.diag_unet import Diag_UNET
 from credit.models.corrdiff_unet import CorrDiffUNet
-
-
 from credit.models.swin_wrf import WRF_Tansformer
 from credit.models.swin_wrf_v2 import WRF_Tansformer as WRF_Tansformer_v2
 from credit.models.dscale_wrf import Dscale_Tansformer
+from credit.models.unet_diffusion import UnetDiffusion
 
 logger = logging.getLogger(__name__)
 
 # Define model types and their corresponding classes
 model_types = {
-    "crossformer": (CrossFormer, "Loading the CrossFormer model with a conv decoder head and skip connections ...",),
-    "crossformer-diffusion": (CrossFormerDiffusion, "Loading A DDPM model with CrossFormer Backbone ....",),
-    "unet-diffusion": (UnetDiffusion, "Loading A DDPM model with UNET Backbone ....",),
-    "crossformer-style": (CrossFormerWithNoise, "Loading the ensemble CrossFormer model with a Style-GAN-like noise injection scheme ...",),
-    "unet404": (SegmentationModel404, "Loading unet404 model"),
-    "fuxi": (Fuxi, "Loading Fuxi model"),
-    "swin": (SwinTransformerV2Cr, "Loading the minimal Swin model"),
-    "graph": (GraphResTransfGRU, "Loading Graph Residual Transformer GRU model"),
     "debugger": (DebuggerModel, "Loading the debugger model"),
     "wrf": (WRF_Tansformer, "Loading WRF Transformer"),
     "wrf_v2": (WRF_Tansformer_v2, "Loading WRF Transformer"),

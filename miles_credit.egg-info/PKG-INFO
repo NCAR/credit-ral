@@ -247,50 +247,97 @@ Requires-Dist: keras
 Requires-Dist: metpy
 Dynamic: license-file
 
-# NSF NCAR MILES Community Research Earth Digital Intelligence Twin (CREDIT)
+# AI Model Repository for RAL-GWC Project
 
-[![DOI](https://zenodo.org/badge/710968229.svg)](https://doi.org/10.5281/zenodo.14361005)
-[![arXiv](https://img.shields.io/badge/arXiv-2411.07814-b31b1b.svg)](https://arxiv.org/abs/2411.07814)
+A fork/extension of [MILES-CREDIT](https://miles-credit.readthedocs.io/en/latest/) (`credit` package,
+version 2025.3.0) used for the RAL GWC work.
 
-[PyPI](https://pypi.org/project/miles-credit/)
+## Installation
+* Run `create_derecho_env.sh` — creates the `credit-gwc3` conda env (Python 3.11), installs the
+  Derecho MPI-enabled PyTorch wheels, then `pip install -e .`.
+* Alternative: MILES-CREDIT [documentation](https://miles-credit.readthedocs.io/en/latest/)
 
-[CREDIT npj Climate and Atmospheric Science Article](nature.com/articles/s41612-025-01125-6)
+---
 
-## About
-CREDIT is an open software platform to train and deploy AI atmospheric prediction models. CREDIT offers fast models 
-that can be flexibly configured both in terms of input data and neural network architecture. The interface is designed
-to be user-friendly and enable fast spin-up and iteration. CREDIT is backed by the AI and atmospheric science expertise
-of the MILES group and the NSF National Center for Atmospheric Research, leading to design choices that balance advanced
-AI/ML with our physical knowledge of the atmosphere.
+## Repository Layout
 
-CREDIT has reached its first stable release with a full set of models, training, and deployment options. It continues
-to be under active development. Please contact [the MILES group](mailto:milescore@ucar.edu) if you have any questions about CREDIT.
+### Top level
 
-MILES CREDIT also provides more detailed [documentation](https://miles-credit.readthedocs.io/en/latest/) with installation
-instructions, how to get started training and deploying models, how to interpret the config files, and full API docs. 
+| Path | Purpose |
+| --- | --- |
+| `credit/` | Installable packages. |
+| `applications/` | Training and prediction drivers that use YAML configs. |
+| `GWC_MESO/` | CONUS404 emulation project: data preprocessing notebooks and run configs. |
+| `GWC_MICRO/` | FastEddy LES emulation project: preprocessing, verification. |
+| `create_derecho_env.sh` | Environment bootstrap script for NCAR Derecho. |
 
-## Citing CREDIT
-If you are interested in using CREDIT as part of your research, please cite the following paper:
-Schreck, J., Sha, Y., Chapman, W., Kimpara, D., Berner, J., McGinnis, S., Kazadi, A., Sobhani, N., Kirk, B., Gagne, D.J. (2024, November 9). 
-Community Research Earth Digital Intelligence Twin (CREDIT). arXiv [cs.AI]. http://arxiv.org/abs/2411.07814
+### `credit/` — core library
 
-# Model Weights and Data
-Model weights for the CREDIT 6-hour WXFormer and FuXi models and the 1-hour WXFormer are available on huggingface.
+**Subpackages**
 
-* [6-Hour WXFormer](https://huggingface.co/djgagne2/wxformer_6h)
-* [1-Hour WXFormer](https://huggingface.co/djgagne2/wxformer_1h)
-* [6-Hour FuXi](https://huggingface.co/djgagne2/fuxi_6h)
+| Path | Purpose |
+| --- | --- |
+| `models/` | Network architectures plus `base_model.py`, `checkpoint.py`, `reset.py`. |
+| `datasets/` | PyTorch datasets/dataloaders per task and data source: ERA5 single-step and multi-step, WRF, LES, downscaling, diagnostics, real-time prediction, and `load_dataset_and_dataloader.py`. |
+| `trainers/` | Training loops, one per task/model family (`trainerERA5*`, `trainerWRF*`, `trainerLES`, `trainerDscale`, `trainerDiag`, `trainerCorrDiff`, `trainer404`), on top of `base_trainer.py`. |
+| `transforms/` | Normalization / variable-packing pipelines per domain (`transforms_global`, `_wrf`, `_les`, `_dscale`, `_diag`, `_quantile`). |
+| `losses/` | Loss functions: weighted/latitude-weighted losses, spectral, CRPS variants (`kcrps`, `almost_fair_crps`), logcosh, MSLE, power, xtanh/xsigmoid, and task-specific LES/diagnostic losses. |
+| `ensemble/` | Ensemble generation and scoring: `gaussian_noise.py`, `bred_vector.py`, `crps.py`. |
+| `verification/` | Deterministic (`standard.py`) and ensemble (`ensemble.py`) verification metrics. |
+| `metadata/` | Static reference data: ERA5/CESM level info NetCDFs, variable metadata YAMLs, model-level index tables. |
 
-Processed ERA5 Zarr Data are available for download through Globus (requires free account) through the [CREDIT ERA5 Zarr Files](https://app.globus.org/file-manager/collections/2fc90d8f-10b7-44e1-a6a5-cf844112822e/overview) collection.
+**Key modules**
 
-Scaling/transform values for normalizing the data are available through Globus [here](https://app.globus.org/file-manager/collections/c5a23e21-1bee-4d1e-bb59-77c5dcee7c76). 
+| File | Purpose |
+| --- | --- |
+| `parser.py` | YAML config parsing/validation — the entry point for all experiment configuration. |
+| `data.py` | Low-level Zarr/NetCDF loading helpers and variable handling. |
+| `xr_sampler.py` | xarray-based sampling of forecast windows from stored datasets. |
+| `forecast.py` | Forecast time-stepping / rollout scheduling. |
+| `output.py` | Writing model predictions to NetCDF/Zarr with proper metadata. |
+| `loss.py`, `metrics.py` | Top-level loss and metric selection from config. |
+| `scheduler.py`, `mixed_precision.py`, `distributed.py`, `seed.py` | LR schedules, AMP/FSDP setup, DDP/FSDP distributed helpers, reproducibility. |
+| `pbs.py` | PBS job-script generation and submission for Derecho. |
+| `physics_core.py`, `physics_constants.py` | Physics-based constraints (mass/energy/water conservation) and constants. |
+| `grid.py`, `interp.py`, `regrid.py`, `boundary_padding.py` | Grid definitions, interpolation/regridding, boundary padding for limited-area domains. |
 
-CREDIT also supports realtime runs generated from deterministic [Google Cloud GFS files](https://console.cloud.google.com/marketplace/product/noaa-public/gfs)
-and raw cube sphere [GEFS files](https://console.cloud.google.com/marketplace/product/noaa-public/gfs-ensemble-forecast-system).
+### `applications/` — run scripts
 
-# Support
-This software is based upon work supported by the NSF National Center for Atmospheric Research, a major facility sponsored by the 
-U.S. National Science Foundation  under Cooperative Agreement No. 1852977 and managed by the University Corporation for Atmospheric Research. Any opinions, findings and conclusions or recommendations 
-expressed in this material do not necessarily reflect the views of NSF. Additional support for development was provided by 
-The NSF AI Institute for Research on Trustworthy AI for Weather, Climate, and Coastal Oceanography (AI2ES)  with grant
-number RISE-2019758 and by Schmidt Sciences, LLC. 
+| File | Purpose |
+| --- | --- |
+| `train.py` | Generic (ERA5/global) training driver. |
+| `WRF_train.py`, `WRF_train_multi.py`, `WRF_train_subset.py` | CONUS404/WRF training: single-step, multi-step rollout, and subset-domain variants. |
+| `WRF_pred_future.py`, `WRF_pred_future_subset.py`, `WRF_pred_teacher.py`, `WRF_pred_metrics.py` | WRF inference: free-running forecasts, teacher-forced runs, and scoring. |
+| `LES_train.py`, `LES_pred.py` | FastEddy LES emulator training and inference. |
+| `dscale_train.py`, `dscale_pred_metrics.py` | Downscaling model training and verification. |
+| `diag_train.py`, `diag_pred_metrics.py` | Diagnostic-variable model training and verification. |
+| `corrdiff_train.py`, `corrdiff_pred.py` | CorrDiff (diffusion-based downscaling) training and inference. |
+| `scaler.py` | Compute mean/std (and other) scaling files from a dataset. |
+| `model_summary.py` | Print model architecture/parameter counts from a config. |
+| `config_visualization_example.yml` | Example config for the visualization tools. |
+
+### `GWC_MESO/` — CONUS404 mesoscale emulation
+
+* [Documentation](https://docs.google.com/document/d/114rqmpH_dyFuOGv5o6DYjuypzRDX2xu8O1C-jAEVv3s/edit?usp=sharing)
+* [Sha et al. (2026) Repository](https://github.com/yingkaisha/RAL-GWC-CONUS)
+
+Domain suffixes: `FULL` (full CONUS), `GP` (Great Plains), `PNW` (Pacific Northwest), `SW` (Southwest).
+
+| Path | Purpose |
+| --- | --- |
+| `data_preprocessing_{FULL,GP,PNW,SW}/` | Per-domain notebooks that build the training data: raw CONUS404 gathering (`DATA00`), static fields (`DATA01`), 1-hourly packing to Zarr (`DATA02`), ERA5 interpolation (`DATA03`), downscaling data prep (`DATA04`); `OPT00`–`OPT02` create mean/std, residual coefficient, and residual-norm files; `QC*`/`PLOT*` check and plot the domain; `qsub_*` notebooks generate PBS jobs; `scripts/` holds the generated job scripts; `data_config_*.yml` define variables and paths. |
+| `ERA5_1h_{FULL,GP,SW}/` | ERA5 boundary/forcing preprocessing at 1-hourly (and 3-hourly/8 km) resolution for each domain. |
+| `GDAS_6h_GP/` | GDAS 6-hourly analysis gathering and preprocessing, used for real-data initialization. |
+| `example/CONUS_FULL/`, `example/CONUS_GP/` | Ready-to-run experiment configs and launch scripts: single-step (`model_single`), multi-step rollouts by lead time (`model_multi_NN`), hyperparameter tuning (`model_tune`/`model_opt`), inference (`model_pred*`), and long climate runs driven by CESM members, GDAS, or varying boundary-update frequency (`model_clim_*`). |
+
+### `GWC_MICRO/` — FastEddy LES emulation
+
+* [Documentation](https://docs.google.com/document/d/1RIZNMinySTYCAvIoWlo4yoAcS2AxZeRsYkH2Nyko-C8/edit?usp=sharing)
+
+| Path | Purpose |
+| --- | --- |
+| `data_preprocessing/` | FastEddy data exploration, static-field prep, packing, downsampling for boundaries, and mean/std, residual-coefficient, and variable-weight generation; `scripts/` holds generated batch jobs. |
+| `dev_foundation_model/` | Development notebooks: foundation-model prototyping, dataset/transform/trainer development (`DEV00`–`DEV06`), inference (with and without boundaries), precipitation loss, climate runs, and FuXi checks. |
+| `libs/` | Standalone analysis utilities used by the notebooks: verification (`verif_utils`, `score_utils`, `seeps_utils`), pressure-level handling (`plevel_utils`), interpolation, physics, solar, graph, and preprocessing helpers. |
+| `example/` | Model configs (`model.yml`, `model_single.yml`, `model_predict.yml`) and matching launch shell scripts. |
+| `visualization/` | Notebooks for training-log plots and downscaled surface-field figures. |
