@@ -9,7 +9,6 @@ from credit.models.corrdiff_unet import CorrDiffUNet
 from credit.models.swin_wrf import WRF_Tansformer
 from credit.models.swin_wrf_v2 import WRF_Tansformer as WRF_Tansformer_v2
 from credit.models.dscale_wrf import Dscale_Tansformer
-from credit.models.unet_diffusion import UnetDiffusion
 
 logger = logging.getLogger(__name__)
 
