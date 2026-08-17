@@ -1,6 +1,6 @@
 #!/bin/bash
 ml conda
-ENV_NAME="credit-gwc3"
+ENV_NAME="credit-gwc4"
 CURR_DIR=`pwd`
 WHEEL_DIR="/glade/work/ksha/wheels"
 echo $CURR_DIR
