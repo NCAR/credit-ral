@@ -52,7 +52,6 @@ A repository based on [MILES-CREDIT](https://miles-credit.readthedocs.io/en/late
 
 | File | Purpose |
 | --- | --- |
-| `train.py` | Generic (ERA5/global) training driver. |
 | `WRF_train.py`, `WRF_train_multi.py`, `WRF_train_subset.py` | CONUS404/WRF training: single-step, multi-step rollout, and subset-domain variants. |
 | `WRF_pred_future.py`, `WRF_pred_future_subset.py`, `WRF_pred_teacher.py`, `WRF_pred_metrics.py` | WRF inference: free-running forecasts, teacher-forced runs, and scoring. |
 | `LES_train.py`, `LES_pred.py` | FastEddy LES emulator training and inference. |
