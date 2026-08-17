@@ -30,12 +30,9 @@ version 2025.3.0) used for the RAL GWC work.
 | --- | --- |
 | `models/` | Network architectures plus `base_model.py`, `checkpoint.py`, `reset.py`. |
 | `datasets/` | PyTorch datasets/dataloaders per task and data source: ERA5 single-step and multi-step, WRF, LES, downscaling, diagnostics, real-time prediction, and `load_dataset_and_dataloader.py`. |
-| `trainers/` | Training loops, one per task/model family (`trainerERA5*`, `trainerWRF*`, `trainerLES`, `trainerDscale`, `trainerDiag`, `trainerCorrDiff`, `trainer404`), on top of `base_trainer.py`. |
-| `transforms/` | Normalization / variable-packing pipelines per domain (`transforms_global`, `_wrf`, `_les`, `_dscale`, `_diag`, `_quantile`). |
+| `trainers/` | Training loops, one per task/model family (`trainerERA5`, `trainerWRF`, `trainerWRF_multi`, `trainerLES`, `trainerDscale`, `trainerDiag`, `trainerCorrDiff`), on top of `base_trainer.py`. |
+| `transforms/` | Normalization / variable-packing pipelines per domain (`transforms_global`, `_wrf`, `_les`, `_dscale`, `_diag`). |
 | `losses/` | Loss functions: weighted/latitude-weighted losses, spectral, CRPS variants (`kcrps`, `almost_fair_crps`), logcosh, MSLE, power, xtanh/xsigmoid, and task-specific LES/diagnostic losses. |
-| `ensemble/` | Ensemble generation and scoring: `gaussian_noise.py`, `bred_vector.py`, `crps.py`. |
-| `verification/` | Deterministic (`standard.py`) and ensemble (`ensemble.py`) verification metrics. |
-| `metadata/` | Static reference data: ERA5/CESM level info NetCDFs, variable metadata YAMLs, model-level index tables. |
 
 **Key modules**
 
@@ -50,7 +47,7 @@ version 2025.3.0) used for the RAL GWC work.
 | `scheduler.py`, `mixed_precision.py`, `distributed.py`, `seed.py` | LR schedules, AMP/FSDP setup, DDP/FSDP distributed helpers, reproducibility. |
 | `pbs.py` | PBS job-script generation and submission for Derecho. |
 | `physics_core.py`, `physics_constants.py` | Physics-based constraints (mass/energy/water conservation) and constants. |
-| `grid.py`, `interp.py`, `regrid.py`, `boundary_padding.py` | Grid definitions, interpolation/regridding, boundary padding for limited-area domains. |
+| `boundary_padding.py` | Boundary padding for limited-area domains. |
 
 ### `applications/` — run scripts
 
@@ -65,7 +62,6 @@ version 2025.3.0) used for the RAL GWC work.
 | `corrdiff_train.py`, `corrdiff_pred.py` | CorrDiff (diffusion-based downscaling) training and inference. |
 | `scaler.py` | Compute mean/std (and other) scaling files from a dataset. |
 | `model_summary.py` | Print model architecture/parameter counts from a config. |
-| `config_visualization_example.yml` | Example config for the visualization tools. |
 
 ### `GWC_MESO/` — CONUS404 mesoscale emulation
 
