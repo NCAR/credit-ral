@@ -68,228 +68,13 @@ try:
 except Exception:
     pass
 
-# ======================================================================= #
-# !!!!!!!!!!!!!!!!!!!!!!!!!! hard coded blocks !!!!!!!!!!!!!!!!!!!!!!!!!! 
-from torch.nn.functional import avg_pool2d, interpolate
-
-def interpolate_boundary(x_boundary, t1, tb0, tb1):
-    # Recover fractional hours from encoded tensors
-    h1 = (torch.atan2(t1[0], t1[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-    hb0 = (torch.atan2(tb0[0], tb0[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-    hb1 = (torch.atan2(tb1[0], tb1[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-
-    # Recover day of year
-    d1 = (torch.atan2(t1[2], t1[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-    db0 = (torch.atan2(tb0[2], tb0[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-    db1 = (torch.atan2(tb1[2], tb1[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-
-    # Total fractional time in hours
-    total1 = d1 * 24 + h1
-    totalb0 = db0 * 24 + hb0
-    totalb1 = db1 * 24 + hb1
-
-    # Interpolation weight
-    w = (total1 - totalb0) / (totalb1 - totalb0)
-
-    # x_boundary: (1, 28, 2, 336, 336) -> lerp along dim=2
-    x0 = x_boundary[:, :, 0:1, :, :]  # (1, 28, 1, 336, 336)
-    x1 = x_boundary[:, :, 1:2, :, :]
-    return x0 + w * (x1 - x0)
-
-def convert_zscore_batch(y_ref, varnames, dict_from, dict_to, dict_unit):
-    y_out = torch.empty_like(y_ref)
-    for i, varname in enumerate(varnames):
-        mean_from, std_from = dict_from[varname]
-        mean_to, std_to = dict_to[varname]
-        f_unit = dict_unit[varname]
-        if varname[0] == 'Q':
-            y_ERA5 = (y_ref[:, i] * std_from + mean_from)*f_unit
-            y_out[:, i] = (y_ERA5**0.5 - mean_to) / std_to
-        else:
-            y_out[:, i] = ((y_ref[:, i] * std_from + mean_from)*f_unit - mean_to) / std_to
-    return y_out
-
-def adjust_to_reference(y_pred_zscore, y_ref_zscore, sigma=3, width=3):
-    # Extract large-scale patterns via heavy smoothing
-    k = int(6 * sigma + 1) | 1  # ensure odd kernel
-    pad = k // 2
-    low_pred = avg_pool2d(y_pred_zscore.view(-1, 1, 336, 336), k, stride=1, padding=pad).view_as(y_pred_zscore)
-    low_ref = avg_pool2d(y_ref_zscore.view(-1, 1, 336, 336), k, stride=1, padding=pad).view_as(y_ref_zscore)
-    low_ref = fill_boundaries(low_ref, y_ref_zscore, width=width)
-    y_adjusted = (y_pred_zscore - low_pred) + low_ref
-    return y_adjusted
-
-def fill_boundaries(low_ref, y_ref_zscore, width=10):
-    H, W = low_ref.shape[-2], low_ref.shape[-1]
-    device = low_ref.device
-
-    # Linear ramp: 1 at edges, 0 at `width` pixels in
-    ramp_h = torch.clamp(torch.minimum(
-        torch.arange(H, device=device).float(),
-        torch.arange(H - 1, -1, -1, device=device).float()
-    ) / width, 0, 1)
-    ramp_w = torch.clamp(torch.minimum(
-        torch.arange(W, device=device).float(),
-        torch.arange(W - 1, -1, -1, device=device).float()
-    ) / width, 0, 1)
-
-    # 2D blending weight: 0 at boundary, 1 in interior
-    alpha = (ramp_h[:, None] * ramp_w[None, :])
-
-    return alpha * low_ref + (1 - alpha) * y_ref_zscore
-
-def check_time_proximity(t1, tb0, tb1, max_hours=2):
-    h1 = (torch.atan2(t1[0], t1[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-    hb0 = (torch.atan2(tb0[0], tb0[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-    hb1 = (torch.atan2(tb1[0], tb1[1]) % (2 * torch.pi)) * 24 / (2 * torch.pi)
-
-    d1 = (torch.atan2(t1[2], t1[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-    db0 = (torch.atan2(tb0[2], tb0[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-    db1 = (torch.atan2(tb1[2], tb1[3]) % (2 * torch.pi)) * 365.25 / (2 * torch.pi)
-
-    total1 = d1 * 24 + h1
-    totalb0 = db0 * 24 + hb0
-    totalb1 = db1 * 24 + hb1
-
-    diff0 = torch.abs(total1 - totalb0)
-    diff1 = torch.abs(total1 - totalb1)
-
-    flag_correct = (diff0 <= max_hours) or (diff1 <= max_hours)
-    return flag_correct
-# ============================================================================ #
-
-
 def predict(rank, world_size, conf, p):
-
-    # spectral nudgging test 
-    # ======================================================= #
-    # !!!!!!!!!!!!!!!!!! hard coded blocks !!!!!!!!!!!!!!!!!! 
-    ys = slice(140, 140 + 336)
-    xs = slice(140, 140 + 336)
-    # ys = slice(0, 336)
-    # xs = slice(330, 330 + 336)
-
-    varnames_upper_ERA5 = ['U', 'V', 'T', 'Q']
-    varnames_ERA5 = ['SP', 'VAR_2T', 'VAR_10U', 'VAR_10V', 'PWAT_05']
-    units_upper_ERA5 = [1, 1, 1, 1]
-    units_ERA5 = [1, 1, 1, 1, 1/np.sqrt(1000.0)]
+    flag_subset = True
+    # ys = slice(0, 336) #slice(200, 535+1, 1) # 
+    # xs = slice(0, 336) #slice(570, 905+1, 1) #
+    ys = slice(300, 300 + 336)
+    xs = slice(300, 300 + 336)
     
-    # ERA5 PWAT: kg/m2 == mm; Q: kg/kg
-    # CONUS404 PWAT: m; Q: kg/kg
-    
-    varnames_upper_C404 = ['WRF_U', 'WRF_V', 'WRF_T', 'WRF_Q_tot_05']
-    varnames_C404 = ['WRF_SP', 'WRF_T2', 'WRF_U10', 'WRF_V10', 'WRF_PWAT_05']
-    
-    C404_level_ind = [1, 2, 3, 5, 7, 10]
-    ERA5_level_ind = [0, 1, 2, 3, 4, 5]
-    
-    # varname_C404_map: full list of C404 variables maps to tensor orders
-    # ind_C404_upper: dict of tensor indices per selected C404 upper air vars
-    # ind_C404: a list of tensor indices for all selected C404 vars (upper air + surface)
-    
-    # varname_ERA5_map: full list of ERA5 variables maps to tensor orders
-    # ind_ERA5_upper: dict of tensor indices per selected C404 upper air vars
-    # ind_ERA5: a list of tensor indices for all selected C404 vars (upper air + surface)
-    
-    # keys_ERA5: dict key for both dict_C404_zscore and dict_ERA5_zscore
-    
-    varname_C404_map = []
-    for var in conf["data"]["variables"]:
-        for i_level in range(conf["data"]["levels"]):
-            varname_C404_map.append(var)    
-    varname_C404_map += conf["data"]["surface_variables"]
-    
-    varname_ERA5_map = []
-    for var in conf["data"]["boundary"]["variables"]:
-        for i_level in range(conf["data"]["boundary"]["levels"]):
-            varname_ERA5_map.append(var)       
-    varname_ERA5_map += conf["data"]["boundary"]["surface_variables"]
-    
-    # -------------------------------- #
-    # get all upper air variable inds
-    ind_C404_upper = {}
-    for var_C404 in varnames_upper_C404:
-        ind_C404_upper[var_C404] = [i_var for i_var, var in enumerate(varname_C404_map) if var == var_C404]
-    
-    ind_ERA5_upper = {}
-    for var_ERA5 in varnames_upper_ERA5:
-        ind_ERA5_upper[var_ERA5] = [i_var for i_var, var in enumerate(varname_ERA5_map) if var == var_ERA5]
-    
-    # ----------------------------------------- #
-    # get inds of all selected vars and levels
-    ind_C404 = []
-    for var_C404 in varnames_upper_C404:
-        for ind_ in C404_level_ind:
-            ind_C404.append(ind_C404_upper[var_C404][ind_])
-    
-    for var_C404 in varnames_C404:
-        ind_C404.append(varname_C404_map.index(var_C404))
-    
-    ind_ERA5 = []
-    for var_ERA5 in varnames_upper_ERA5:
-        for ind_ in ERA5_level_ind:
-            ind_ERA5.append(ind_ERA5_upper[var_ERA5][ind_])
-            
-    for var_ERA5 in varnames_ERA5:
-        ind_ERA5.append(varname_ERA5_map.index(var_ERA5))
-    
-    
-    ds_ERA5_mean = xr.open_dataset(conf['data']['boundary']['mean_path'])
-    ds_ERA5_std = xr.open_dataset(conf['data']['boundary']['std_path'])
-    
-    ds_C404_mean = xr.open_dataset(conf['data']['mean_path'])
-    ds_C404_std = xr.open_dataset(conf['data']['std_path'])
-    
-    N_level = len(C404_level_ind)
-    
-    dict_ERA5_zscore = {}
-    dict_ERA5_unit = {}
-    varnames_ERA5_all = []
-    for i_var, var_ERA5 in enumerate(varnames_upper_ERA5):
-        for i_level, ind_level in enumerate(ERA5_level_ind):
-            varnames_ERA5_all.append(f'{var_ERA5}_{i_level}')
-            dict_ERA5_zscore[f'{var_ERA5}_{i_level}'] = [
-                float(ds_ERA5_mean[var_ERA5].values[ind_level]), 
-                float(ds_ERA5_std[var_ERA5].values[ind_level])
-            ]
-            dict_ERA5_unit[f'{var_ERA5}_{i_level}'] = units_upper_ERA5[i_var]
-    
-    varnames_ERA5_all = varnames_ERA5_all + varnames_ERA5
-    for i_var, var_ERA5 in enumerate(varnames_ERA5):
-        dict_ERA5_zscore[var_ERA5] = [
-            float(ds_ERA5_mean[var_ERA5].values), 
-            float(ds_ERA5_std[var_ERA5].values)
-        ]
-        dict_ERA5_unit[var_ERA5] = units_ERA5[i_var]
-        
-    
-    dict_C404_zscore = {}
-    varnames_C404_all = []
-    for var_C404 in varnames_upper_C404:
-        for i_level, ind_level in enumerate(C404_level_ind):
-            varnames_C404_all.append(f'{var_C404}_{i_level}')
-            dict_C404_zscore[f'{var_C404}_{i_level}'] = [
-                float(ds_C404_mean[var_C404].values[ind_level]), 
-                float(ds_C404_std[var_C404].values[ind_level])
-            ]
-    
-    varnames_C404_all = varnames_C404_all + varnames_C404
-    for var_C404 in varnames_C404:
-        dict_C404_zscore[var_C404] = [
-            float(ds_C404_mean[var_C404].values), 
-            float(ds_C404_std[var_C404].values)
-        ]
-    
-    keys_C404 = list(dict_C404_zscore.keys())
-    keys_ERA5 = list(dict_ERA5_zscore)
-    
-    for i_key, key in enumerate(keys_C404):
-        key_new = keys_ERA5[i_key]
-        dict_C404_zscore[key_new] = dict_C404_zscore[key]
-        del dict_C404_zscore[key]
-    
-    del keys_C404
-        
     # ======================================================== #
     # load pytorch model
     # -------------------------------------------------------- #
@@ -545,7 +330,7 @@ def predict(rank, world_size, conf, p):
     # )
     # ---------------------------- #
     # no leap year
-    step_hours = f'{lead_time_periods}H'
+    step_hours = f'{lead_time_periods}h'
     end_time = initial_time + (N_steps) * np.timedelta64(lead_time_periods, "h")
     idx = pd.date_range(start=initial_time, end=end_time, freq=step_hours)
     idx_noleap = idx[~((idx.month == 2) & (idx.day == 29))]
@@ -593,8 +378,12 @@ def predict(rank, world_size, conf, p):
             ds_surf_outside = xr.concat(list_ds_surf_outside_slice[::-1], dim="time")
             ds_outside = xr.merge([ds_upper_outside, ds_surf_outside])
 
-        t0 = [fcst_timesteps[i_step - 1],]
-        t1 = [fcst_timesteps[i_step],]
+        t0 = [
+            fcst_timesteps[i_step - 1],
+        ]
+        t1 = [
+            fcst_timesteps[i_step],
+        ]
         t2 = ds_outside["time"].values
         time_encode = encode_datetime64(np.concatenate([t0, t1, t2]))
 
@@ -768,36 +557,6 @@ def predict(rank, world_size, conf, p):
         # # start prediction
         y_pred = model(x, x_boundary, x_time_encode)
 
-        # ------------------------------------------------------------ #
-        # !!!!!!!!!!!!!!!!!!!!!!!!! hard coded !!!!!!!!!!!!!!!!!!!!!!!!
-        # ------------------------------------------------------------ #
-        # large-scale correction
-        x_time_decode = x_time_encode.reshape(4, 4)
-        
-        t1 = x_time_decode[:, 1]
-        tb0 = x_time_decode[:, 2]
-        tb1 = x_time_decode[:, 3]
-    
-        flag_correct = check_time_proximity(t1, tb0, tb1, max_hours=2)
-    
-        if flag_correct:
-            x_surf = x_boundary[:, ind_ERA5, ...]
-            y_ref = interpolate_boundary(x_surf, t1, tb0, tb1)
-            
-            y_ref_zscore = convert_zscore_batch(
-                y_ref, varnames_ERA5_all, 
-                dict_ERA5_zscore, dict_C404_zscore, dict_ERA5_unit
-            )
-            
-            y_pred_zscore = y_pred[:, ind_C404, ...]
-            
-            y_pred_correct = adjust_to_reference(y_pred_zscore, y_ref_zscore)
-            y_pred[:, ind_C404, ...] = y_pred_correct
-    
-        # ------------------------------------------------------------ #
-        # !!!!!!!!!!!!!!!!!!!!!!!!! hard coded !!!!!!!!!!!!!!!!!!!!!!!!
-        # ------------------------------------------------------------ #
-        
         y_pred_save = state_transformer.inverse_transform(y_pred.cpu()).detach()
 
         utc_datetime = init_datetime + timedelta(hours=lead_time_periods * i_step)

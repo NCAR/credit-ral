@@ -8,7 +8,9 @@ physics/scripts/
 verification/scripts/
 verification/verif_config.yml
 visualization/plot_config.yml
-
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+*/*/.ipynb_checkpoints/
 data_preprocessing/qsub*
 data_preprocessing/*.csv
 
