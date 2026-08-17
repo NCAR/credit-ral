@@ -3,8 +3,8 @@
 A repository based on [MILES-CREDIT](https://miles-credit.readthedocs.io/en/latest/) (`credit` package, version 2025.3.0) for the RAL GWC Project.
 
 ## Installation
-* Run `create_derecho_env.sh` — creates the `credit-gwc3` conda env (Python 3.11), installs the
-  Derecho MPI-enabled PyTorch wheels, then `pip install -e .`.
+* Run `create_derecho_env.sh`; it creates the `credit-gwc3` conda env (Python 3.11), installs the
+  Derecho MPI-enabled PyTorch wheels, then run `pip install -no--deps .` in this repo.
 * Alternative: MILES-CREDIT [documentation](https://miles-credit.readthedocs.io/en/latest/)
 
 ---
