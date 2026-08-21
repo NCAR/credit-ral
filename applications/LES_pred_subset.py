@@ -317,7 +317,7 @@ def predict(rank, world_size, conf, p):
     # )
     # ---------------------------- #
     # no leap year
-    step_hours = f'{lead_time_periods}H'
+    step_hours = f'{lead_time_periods}h'
     end_time = initial_time + (N_steps) * np.timedelta64(lead_time_periods, "h")
     idx = pd.date_range(start=initial_time, end=end_time, freq=step_hours)
     idx_noleap = idx[~((idx.month == 2) & (idx.day == 29))]
