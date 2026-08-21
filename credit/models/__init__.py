@@ -10,6 +10,8 @@ from credit.models.swin_wrf import WRF_Tansformer
 from credit.models.swin_wrf_v2 import WRF_Tansformer as WRF_Tansformer_v2
 from credit.models.dscale_wrf import Dscale_Tansformer
 
+from credit.models.fuxi import Fuxi
+
 logger = logging.getLogger(__name__)
 
 # Define model types and their corresponding classes
@@ -17,6 +19,7 @@ model_types = {
     "debugger": (DebuggerModel, "Loading the debugger model"),
     "wrf": (WRF_Tansformer, "Loading WRF Transformer"),
     "wrf_v2": (WRF_Tansformer_v2, "Loading WRF Transformer"),
+    "fuxi": (Fuxi, "Loading Fuxi model"),
     "dscale": (Dscale_Tansformer, "Loading downscaling Transformer"),
     "unet": (Diag_UNET, "Loading UNET for downscaling"),
     "corrdiff": (CorrDiffUNet, "CorrDiff UNet")
